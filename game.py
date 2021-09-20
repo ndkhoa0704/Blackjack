@@ -2,6 +2,9 @@ import random
 
 
 def blackjack(cards: list):
+    '''
+    Check for blackjack occurence
+    '''
     if len(cards) == 2:
         # black jack
         if 1 in cards and \
@@ -11,6 +14,12 @@ def blackjack(cards: list):
 
 
 def end_game_check(p, d):
+    '''
+    Check for end game condition
+    1: win
+    2: lose
+    3: draw
+    '''d
     if blackjack(p.show_cards()) == True:
         return 1
     if blackjack(d.show_cards()) == True:
@@ -33,6 +42,9 @@ def end_game_check(p, d):
 
 
 def check_input(options: list):
+    '''
+    Check user input and continue asking if the input is invalid
+    '''
     user_input = input()
     while sum([1 if user_input == i else 0 for i in options]) == 0:
         print("Invalid input. Try again: ", end='')
@@ -41,6 +53,10 @@ def check_input(options: list):
 
 
 class Deck:
+    '''
+    Standard 52-card deck
+    '''
+
     def __init__(self):
         self.cards = {i: 4 for i in range(1, 14)}
 
@@ -56,12 +72,26 @@ class Deck:
 
 
 class Player:
+    '''
+    Player
+    Basic behavior:
+    - Hit
+    - Bet
+    - Check cards
+    - Check balance
+    - Return holding cards
+    '''
+
     def __init__(self, money):
         self.__money = money
         self.__cards_holding = []
         self.__total = 0
 
     def __total_cal(self):
+        '''
+        Calculate cards value
+        Ace can be 1 or 11
+        '''
         total = 0
         for i in self.__cards_holding:
             if i == 1:
@@ -73,16 +103,25 @@ class Player:
         self.__total = total
 
     def hit(self, d):
+        '''
+        Get cards from deck and keep
+        '''
         card = d.get()
         self.__cards_holding.append(card)
         return card
 
     def bet(self, money):
+        '''
+        Choose amount of money for betting
+        '''
         if money <= self.__money:
             return True
         return False
 
     def check(self):
+        '''
+        Check current cards' total value
+        '''
         self.__total_cal()
         return self.__total
 
@@ -103,6 +142,10 @@ class Player:
 
 
 class Dealer(Player):
+    '''
+    Automatic dealer
+    '''
+
     def __init__(self):
         Player.__init__(self, 0)
 
@@ -119,19 +162,25 @@ class Dealer(Player):
         pass
 
     def autorun(self, d):
+        '''
+        Automatically hit and check total
+        '''
         total = 0
         while True:
             card = self.hit(d)
             if blackjack(self.show_cards()) == True:
                 break
+            # Consider ace is 11
             if card == 1:
                 total += 11
             else:
                 total += card
+            # Reconsider ace
             if total > 21 and card == 1:
                 total -= 10
             if total > 21 or total >= 16:
                 break
+        # Hit or stand randomly while in safe values' range
         if total <= 19 and random.randint(0, 1) == 1:
             self.hit(d)
 
