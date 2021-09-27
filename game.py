@@ -181,7 +181,7 @@ class Dealer(Player):
             if total > 21 or total >= 16:
                 break
         # Hit or stand randomly while in safe values' range
-        if total <= 19 and random.randint(0, 1) == 1:
+        if total <= 20 and random.randint(0, 1) == 1:
             self.hit(d)
 
 
